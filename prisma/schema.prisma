@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  SUPERADMIN
+  CLIENT
+}
+
+enum FIELD {
+  SHORTDESC
+  LONGDESC
+  NUMBER
+  RANGE
+  RADIO
+  CHECKBOX
+  DATE
+  TIME
+  FILE
+  DROPDOWN
+  RATING
+}
+
+model User {
+  id            String       @id @unique
+  email         String       @unique
+  name          String
+  firebaseId    String
+  role          ROLE
+  Institution   Institution? @relation(fields: [institutionId], references: [id])
+  institutionId String?
+}
+
+model Institution {
+  id            String         @id @unique
+  name          String         @unique
+  address       String
+  city          String
+  state         String
+  pinCode       String
+  admins        User[]
+  announcements Announcement[]
+}
+
+model Announcement {
+  id                 String        @id @unique
+  Institution        Institution?  @relation(fields: [institutionId], references: [id])
+  institutionId      String?
+  name               String
+  dateOfAnnouncement DateTime      @default(now())
+  description        String
+  forms              Form[]
+  otherInfo          OtherInfo[]
+  applications       Application[]
+}
+
+model Application {
+  id             String        @id @unique
+  Announcement   Announcement? @relation(fields: [announcementId], references: [id])
+  announcementId String?
+  name           String
+  description    String
+  attachments    Attachment[]
+  signature      String
+}
+
+model Attachment {
+  id            String       @id @unique
+  name          String
+  file          String
+  Application   Application? @relation(fields: [applicationId], references: [id])
+  applicationId String?
+}
+
+model Form {
+  id             String        @id @unique
+  name           String
+  description    String
+  fields         Field[]
+  Announcement   Announcement? @relation(fields: [announcementId], references: [id])
+  announcementId String?
+}
+
+model Field {
+  id     String  @id @unique
+  name   String  @unique
+  type   FIELD
+  Form   Form?   @relation(fields: [formId], references: [id])
+  formId String?
+}
+
+model OtherInfo {
+  id             String        @id @unique
+  title          String        @unique
+  description    String
+  Announcement   Announcement? @relation(fields: [announcementId], references: [id])
+  announcementId String?
+}

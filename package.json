@@ -1,0 +1,24 @@
+{
+  "name": "digiAdmin",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsx watch index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "prisma": "^6.5.0",
+    "tsx": "^4.19.3"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.5.0",
+    "@types/express": "^5.0.0",
+    "dotenv": "^16.4.7"
+  }
+}
